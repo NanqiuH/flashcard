@@ -16,12 +16,15 @@ import {
   DialogActions,
   CardActionArea,
   CircularProgress,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
-import { useUser } from '@clerk/nextjs';
+import { SignedIn, SignedOut, SignIn, UserButton, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { doc, collection, getDoc, writeBatch } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { styled } from '@mui/system';
+import Head from 'next/head';
 
 
 const HeroBox = styled(Box)({
@@ -29,7 +32,7 @@ const HeroBox = styled(Box)({
   backgroundImage: 'url("/hero-bg.png")',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  minHeight: '60vh',
+  minHeight: '50vh',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -71,6 +74,21 @@ const StyledButton = styled(Button)({
   },
 });
 
+const StyledButtonAppBar = styled('a')(({ theme }) => ({
+  color: 'white',
+  borderColor: 'white',
+  textTransform: 'none',
+  marginRight: theme.spacing(2),
+  textDecoration: 'none',
+  padding: theme.spacing(1, 2),
+  borderRadius: theme.shape.borderRadius,
+  border: '1px solid white',
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+}));
+
 export default function Generate() {
   const { isLoaded, isSignedIn, user } = useUser();  
   const [text, setText] = useState('');
@@ -80,6 +98,10 @@ export default function Generate() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
 
   const handleSubmit = async () => {
     if (!text.trim()) {
@@ -163,6 +185,44 @@ export default function Generate() {
 
   return (
     <>
+      <Head>
+  <title>Flashcard SaaS</title>
+  <meta name="description" content="Create flashcards from your text" />
+</Head>
+
+<AppBar position="static" sx={{ backgroundColor: '#333', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
+  <Toolbar>
+    <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold', mr: 1 }}> 
+      Flashcard SaaS
+    </Typography>
+    <StyledButtonAppBar href="/">Home</StyledButtonAppBar>
+    <StyledButtonAppBar href="/flashcards">Flashcard Collections</StyledButtonAppBar>
+    <SignedOut>
+      <Button 
+        variant="outlined" 
+        href="/sign-in" 
+        sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
+      >
+        Login
+      </Button>
+      <Button 
+        variant="outlined" 
+        href="/sign-up" 
+        sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
+      >
+        Sign Up
+      </Button>
+    </SignedOut>
+    <SignedIn>
+      <UserButton sx={{ color: 'white', ml: 2 }} />
+    </SignedIn>
+  </Toolbar>
+</AppBar>
+
+
+
+
+
       <HeroBox>
         <HeroContent>
           <Typography variant="h2" component="h1" gutterBottom>
