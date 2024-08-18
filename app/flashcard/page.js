@@ -130,14 +130,14 @@ export default function Flashcard() {
     return (
         <>
             <Head>
-                <title>Flashcard SaaS</title>
+                <title>QuickStudy</title>
                 <meta name="description" content="Manage your flashcard collections with ease." />
             </Head>
 
             <StyledAppBar position="static">
                 <Toolbar>
                     <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-                        Flashcard SaaS
+                        QuickStudy
                     </Typography>
                     <StyledButton href="/">Home</StyledButton>
                     <StyledButton href="/generate">Generate Flashcard</StyledButton>
