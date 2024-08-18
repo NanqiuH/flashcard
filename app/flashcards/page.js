@@ -1,60 +1,33 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
+import { useEffect, useState } from "react"
+import { collection, doc, getDocs } from "firebase/firestore"
+import { db } from "@/firebase"
+import { useSearchParams } from "next/navigation"
 import {
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-  AppBar,
-  Toolbar,
-  Box,
-} from '@mui/material';
-import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
-import { doc, getDoc, setDoc, collection } from 'firebase/firestore';
-import { db } from '@/firebase';
-import { useRouter } from 'next/navigation';
+    Container,
+    Typography,
+    Box,
+    Grid,
+    Card,
+    CardContent,
+    CardActionArea,
+    Toolbar,
+    AppBar
+  } from '@mui/material';
 import { styled } from '@mui/system';
-import Head from 'next/head';
+import Head from "next/head"
 
-const HeroBox = styled(Box)({
-  position: 'relative',
-  backgroundImage: 'url("/hero-bg.png")',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  minHeight: '40vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  textAlign: 'center',
-  padding: '2rem',
-  color: '#fff',
-  zIndex: 1,
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: -1,
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: '15px',
+  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-10px)',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.15)',
   },
-});
-
-const HeroContent = styled(Box)({
-  position: 'relative',
-  zIndex: 2,
-  color: '#fff',
-  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)',
-});
-
-const StyledAppBar = styled(AppBar)({
-  backgroundColor: '#333',
-  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-});
+}));
 
 const StyledButton = styled('a')(({ theme }) => ({
   color: 'white',
@@ -71,46 +44,84 @@ const StyledButton = styled('a')(({ theme }) => ({
   },
 }));
 
-const FlashcardContainer = styled(Container)({
-  marginTop: '2rem',
-  marginBottom: '2rem',
+const StyledAppBar = styled(AppBar)({
+  backgroundColor: '#333',
+  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
 });
 
-const StyledCard = styled(Card)({
-  transition: 'transform 0.3s, box-shadow 0.3s',
-  '&:hover': {
-    transform: 'scale(1.05)',
-    boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
-  },
+const FlashcardContent = styled(CardContent)(({ flipped }) => ({
+  minHeight: 150,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  textAlign: 'center',
+  padding: '20px',
+  borderRadius: '15px',
+  backgroundColor: flipped ? '#6a11cb' : '#007bff',
+  backgroundImage: flipped ? 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)' : 'none',
+  color: '#fff',
+  fontSize: '1.2rem',
+  fontWeight: '500',
+  transition: 'background-color 0.3s ease, color 0.3s ease',
+}));
+
+const Wrapper = styled('div')({
+  display: 'flex',
+  width: '100vw',
+  height: '105vh',
+});
+
+const FlashcardSection = styled('div')({
+  flex: 1, 
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '20px',
+  overflowY: 'auto', 
+});
+
+const BackgroundSection = styled('div')({
+  flex: 1, 
+  backgroundImage: `url('hero-bg.png')`,
+  backgroundSize: 'cover', 
+  backgroundRepeat: 'no-repeat', 
+  backgroundPosition: 'center center', 
 });
 
 export default function Flashcard() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [flashcards, setFlashcards] = useState([]);
-  const router = useRouter();
+  const [flipped, setFlipped] = useState({});
+
+  const searchParams = useSearchParams();
+  const search = searchParams.get('id');
 
   useEffect(() => {
-    async function getFlashcards() {
-      if (!user) return;
-      const docRef = doc(collection(db, 'users'), user.id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const collections = docSnap.data().flashcards || [];
-        setFlashcards(collections);
-      } else {
-        await setDoc(docRef, { flashcards: [] });
-      }
-    }
-    getFlashcards();
-  }, [user]);
+    async function getFlashcard() {
+      if (!search || !user) return;
 
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
+      const colRef = collection(doc(collection(db, 'users'), user.id), search);
+      const docs = await getDocs(colRef);
+      const flashcards = [];
+
+      docs.forEach((doc) => {
+        flashcards.push({ id: doc.id, ...doc.data() });
+      });
+      setFlashcards(flashcards);
+    }
+    getFlashcard();
+  }, [search, user]);
 
   const handleCardClick = (id) => {
-    router.push(`/flashcard?id=${id}`);
+    setFlipped((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
+
+  if (!isLoaded || !isSignedIn) {
+    return <></>;
+  }
 
   return (
     <>
@@ -136,76 +147,36 @@ export default function Flashcard() {
         </Toolbar>
       </StyledAppBar>
 
-      <HeroBox>
-        <HeroContent>
-          <Typography variant="h3" component="h1" gutterBottom>
-            Your Flashcard Collections
-          </Typography>
-          <Typography variant="h6" component="p">
-            Click on a collection to view and study your flashcards.
-          </Typography>
-        </HeroContent>
-      </HeroBox>
-
-      <FlashcardContainer maxWidth="md">
-        {flashcards.length === 0 ? (
-          <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-            You don't have any flashcard collections yet. Start by creating one!
-          </Typography>
-        ) : (
-          <Grid container spacing={4}>
-            {flashcards.map((flashcard, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <StyledCard onClick={() => handleCardClick(flashcard.name)}>
-                  <CardActionArea>
-                    <CardContent
-                      sx={{
-                        height: 150,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#f5f5f5',
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {/* Adding a background gradient and a more dynamic text styling */}
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          background: 'linear-gradient(135deg, #007bff 0%, #0056b3 100%)',
-                          zIndex: 1,
-                          opacity: 0.9,
-                        }}
-                      />
-                      <Typography
-                        variant="h6"
-                        align="center"
-                        sx={{
-                          position: 'relative',
-                          zIndex: 2,
-                          color: '#fff',
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          letterSpacing: 1.5,
-                          textShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
-                        }}
-                      >
-                        {flashcard.name}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </StyledCard>
-
+      <Wrapper>
+        <FlashcardSection>
+          {flashcards.length > 0 && (
+            <Box>
+              <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
+                Flashcards review
+              </Typography>
+              <Typography variant="body1" component="p" sx={{ mb: 4, fontSize: '2rem', color: '#333' }}>
+                Click on the flashcards to see the answers.
+              </Typography>
+              <Grid container spacing={3}>
+                {flashcards.map((flashcard, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <StyledCard onClick={() => handleCardClick(index)}>
+                      <CardActionArea>
+                        <FlashcardContent flipped={flipped[index]}>
+                          <Typography variant="h6">
+                            {flipped[index] ? (flashcard.back || 'No content on the back') : (flashcard.front || 'No content on the front')}
+                          </Typography>
+                        </FlashcardContent>
+                      </CardActionArea>
+                    </StyledCard>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        )}
-      </FlashcardContainer>
+            </Box>
+          )}
+        </FlashcardSection>
+        <BackgroundSection />
+      </Wrapper>
     </>
   );
 }

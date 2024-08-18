@@ -186,38 +186,38 @@ export default function Generate() {
   return (
     <>
       <Head>
-  <title>Flashcard SaaS</title>
-  <meta name="description" content="Create flashcards from your text" />
-</Head>
+        <title>Flashcard SaaS</title>
+        <meta name="description" content="Create flashcards from your text" />
+      </Head>
 
-<AppBar position="static" sx={{ backgroundColor: '#333', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
-  <Toolbar>
-    <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold', mr: 1 }}> 
-      Flashcard SaaS
-    </Typography>
-    <StyledButtonAppBar href="/">Home</StyledButtonAppBar>
-    <StyledButtonAppBar href="/flashcards">Flashcard Collections</StyledButtonAppBar>
-    <SignedOut>
-      <Button 
-        variant="outlined" 
-        href="/sign-in" 
-        sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
-      >
-        Login
-      </Button>
-      <Button 
-        variant="outlined" 
-        href="/sign-up" 
-        sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
-      >
-        Sign Up
-      </Button>
-    </SignedOut>
-    <SignedIn>
-      <UserButton sx={{ color: 'white', ml: 2 }} />
-    </SignedIn>
-  </Toolbar>
-</AppBar>
+      <AppBar position="static" sx={{ backgroundColor: '#333', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
+        <Toolbar>
+          <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold', mr: 1 }}> 
+            Flashcard SaaS
+          </Typography>
+          <StyledButtonAppBar href="/">Home</StyledButtonAppBar>
+          <StyledButtonAppBar href="/flashcards">Flashcard Collections</StyledButtonAppBar>
+          <SignedOut>
+            <Button 
+              variant="outlined" 
+              href="/sign-in" 
+              sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
+            >
+              Login
+            </Button>
+            <Button 
+              variant="outlined" 
+              href="/sign-up" 
+              sx={{ color: 'white', borderColor: 'white', ml: 2, textTransform: 'none' }}
+            >
+              Sign Up
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton sx={{ color: 'white', ml: 2 }} />
+          </SignedIn>
+        </Toolbar>
+      </AppBar>
 
 
 

@@ -39,7 +39,7 @@ export async function POST(req) {
             product_data: {
               name: 'Pro subscription',
             },
-            unit_amount: formatAmountForStripe(9.99, 'usd'), 
+            unit_amount: formatAmountForStripe(29.99, 'usd'), 
             recurring: {
               interval: 'month',
               interval_count: 1,

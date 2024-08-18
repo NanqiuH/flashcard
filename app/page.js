@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import getStripe from "@/utils/get-stripe";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
@@ -7,8 +9,59 @@ import BackgroundImage from '@/public/hero-bg.png';
 import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import BarChartIcon from "@mui/icons-material/BarChart"
+import { styled } from '@mui/system';
+
+const StyledButton = styled('a')(({ theme }) => ({
+  color: 'white',
+  borderColor: 'white',
+  textTransform: 'none',
+  marginRight: theme.spacing(2),
+  textDecoration: 'none',
+  padding: theme.spacing(1, 2),
+  borderRadius: theme.shape.borderRadius,
+  border: '1px solid white',
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+}));
 
 export default function Home() {
+
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch('/api/checkout_session', {
+      method: 'POST',
+      headers: { origin: 'http://localhost:3000' },
+    })
+    const checkoutSessionJson = await checkoutSession.json()
+  
+    const stripe = await getStripe()
+    const {error} = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    })
+  
+    if (error) {
+      console.warn(error.message)
+    }
+  }
+
+  const handleSubmitTeam = async () => {
+    const checkoutSession = await fetch('/api/checkout_session_team', {
+      method: 'POST',
+      headers: { origin: 'http://localhost:3000' },
+    })
+    const checkoutSessionJson = await checkoutSession.json()
+  
+    const stripe = await getStripe()
+    const {error} = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    })
+  
+    if (error) {
+      console.warn(error.message)
+    }
+  }
+
   return (
     <Container maxWidth="100vw" disableGutters>
       <Head>
@@ -21,6 +74,7 @@ export default function Home() {
           <Typography variant="h5" sx={{ flexGrow: 1, color: 'white' }}>
             Flashcard SaaS
           </Typography>
+          <StyledButton href="/flashcards">Your collections</StyledButton>
           <SignedOut>
             <Button color="inherit" href="/sign-in" sx={{ color: 'white', borderColor: 'white', ml: 2 }}>
               Login
@@ -135,7 +189,7 @@ export default function Home() {
                   <li>Basic support</li>
                 </ul>
               </Box>
-              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} href="/generate">
                 Get Started
               </Button>
             </Box>
@@ -197,7 +251,7 @@ export default function Home() {
                   <li>Export flashcards to PDF</li>
                 </ul>
               </Box>
-              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2, backgroundColor: '#ff9800', color: '#fff' }}>
+              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2, backgroundColor: '#ff9800', color: '#fff' }} onClick={handleSubmit}>
                 Choose Pro
               </Button>
             </Box>
@@ -242,7 +296,7 @@ export default function Home() {
                   <li>Dedicated account manager</li>
                 </ul>
               </Box>
-              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleSubmitTeam}>
                 Choose Team
               </Button>
             </Box>
