@@ -65,14 +65,14 @@ export default function Home() {
   return (
     <Container maxWidth="100vw" disableGutters>
       <Head>
-        <title>QuickStudy</title>
+        <title>Flashcard Saas</title>
         <meta name="description" content="Create flashcard from your text"></meta>
       </Head>
 
       <AppBar position="static" sx={{ backgroundColor: '#333' }}>
         <Toolbar>
           <Typography variant="h5" sx={{ flexGrow: 1, color: 'white' }}>
-            QuickStudy
+            Flashcard SaaS
           </Typography>
           <StyledButton href="/flashcards">Your collections</StyledButton>
           <SignedOut>
@@ -94,7 +94,7 @@ export default function Home() {
         {/* Background overlay for better text visibility */}
         <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)' }} />
         <Typography variant="h1" component="h1" gutterBottom sx={{ fontWeight: 'bold', position: 'relative', zIndex: 1 }}>
-          Welcome to QuickStudy
+          Welcome to Flashcard SaaS
         </Typography>
         <Typography variant="h4" component="h2" gutterBottom sx={{ mb: 4, position: 'relative', zIndex: 1 }}>
           The easiest way to create flashcards from your text.

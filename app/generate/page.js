@@ -154,46 +154,52 @@ export default function Generate() {
       alert('Please enter a name for your flashcard set.');
       return;
     }
-
+  
     const batch = writeBatch(db);
     const userDocRef = doc(collection(db, 'users'), user.id);
     const docSnap = await getDoc(userDocRef);
-
-    if(docSnap.exists()) {
+  
+    if (docSnap.exists()) {
       const collections = docSnap.data().flashcards || [];
-      if(collections.find((f) => f.name === name)) {
+      if (collections.find((f) => f.name === name)) {
         alert('Flashcard collection with the same name already exists.');
         return;
       } else {
-        collections.push({name});
-        batch.set(userDocRef, {flashcards: collections}, {merge: true});
+        collections.push({ name });
+        batch.set(userDocRef, { flashcards: collections }, { merge: true });
       }
     } else {
-      batch.set(userDocRef, {flashcards: [{name}]});
+      batch.set(userDocRef, { flashcards: [{ name }] });
     }
-
+  
     const colRef = collection(userDocRef, name);
     flashcards.forEach((flashcard) => {
       const cardDocRef = doc(colRef);
       batch.set(cardDocRef, flashcard);
     });
-
-    await batch.commit();
-    handleClose();
-    router.push('/flashcards');
+  
+    try {
+      await batch.commit();
+      handleClose();
+      router.push('/flashcards');
+    } catch (error) {
+      console.error('Error saving flashcards:', error);
+      alert('An error occurred while saving flashcards. Please try again.');
+    }
   };
+  
 
   return (
     <>
       <Head>
-        <title>QuickStudy</title>
+        <title>Flashcard SaaS</title>
         <meta name="description" content="Create flashcards from your text" />
       </Head>
 
       <AppBar position="static" sx={{ backgroundColor: '#333', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
         <Toolbar>
           <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold', mr: 1 }}> 
-              QuickStudy
+            Flashcard SaaS
           </Typography>
           <StyledButtonAppBar href="/">Home</StyledButtonAppBar>
           <StyledButtonAppBar href="/flashcards">Flashcard Collections</StyledButtonAppBar>
@@ -218,6 +224,10 @@ export default function Generate() {
           </SignedIn>
         </Toolbar>
       </AppBar>
+
+
+
+
 
       <HeroBox>
         <HeroContent>
