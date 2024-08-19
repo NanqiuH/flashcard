@@ -119,7 +119,7 @@ export default function Home() {
               Adaptive Learning
             </Typography>
             <Typography variant="body1">
-              Flashcards adapt to the user's learning pace and difficulty level, focusing on areas where they need the most practice.
+              Flashcards adapt to the user&apos;s learning pace and difficulty level, focusing on areas where they need the most practice.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={4} sx={{ textAlign: 'center' }}>

@@ -151,7 +151,7 @@ export default function Flashcard() {
       <FlashcardContainer maxWidth="md">
         {flashcards.length === 0 ? (
           <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-            You don't have any flashcard collections yet. Start by creating one!
+            You don&apos;t have any flashcard collections yet. Start by creating one!
           </Typography>
         ) : (
           <Grid container spacing={4}>

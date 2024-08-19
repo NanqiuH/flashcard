@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Box, Button, CircularProgress, Container, Typography } from "@mui/material";
+import { Image } from "@mui/icons-material";
 
 const ResultPage = () => {
     const router = useRouter();
@@ -55,7 +56,7 @@ const ResultPage = () => {
                     {error}
                 </Typography>
                 <Box sx={{ mt: 4 }}>
-                    <img src="error.png" alt="Error illustration" style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }} />
+                    <Image src="error.png" alt="Error illustration" style={{ maxWidth: '100%', height: 'auto', marginBottom: '20px' }} />
                     <Typography variant="body1" sx={{ mb: 4 }}>
                         Oops! Something went wrong while processing your request. Please try again later or return to the homepage.
                     </Typography>
