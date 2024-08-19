@@ -192,14 +192,14 @@ export default function Generate() {
   return (
     <>
       <Head>
-        <title>Flashcard SaaS</title>
+        <title>QuickStudy</title>
         <meta name="description" content="Create flashcards from your text" />
       </Head>
 
       <AppBar position="static" sx={{ backgroundColor: '#333', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
         <Toolbar>
           <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold', mr: 1 }}> 
-            Flashcard SaaS
+          QuickStudy
           </Typography>
           <StyledButtonAppBar href="/">Home</StyledButtonAppBar>
           <StyledButtonAppBar href="/flashcards">Flashcard Collections</StyledButtonAppBar>
@@ -224,10 +224,6 @@ export default function Generate() {
           </SignedIn>
         </Toolbar>
       </AppBar>
-
-
-
-
 
       <HeroBox>
         <HeroContent>
